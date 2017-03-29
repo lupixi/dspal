@@ -39,15 +39,14 @@ QC_SOC_TARGET?=APQ8074
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
-	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-4.9-2014.11-x86_64_arm-linux-gnueabihf_linux/bin to PATH" && false)
 
-cmake_hexagon/bundle.cmake:
+../cmake_hexagon/bundle.cmake:
 	cd ../ && git submodule init
 	cd ../ && git submodule update
 
 .PHONY: dspal_tester version_test
-dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake
-	mkdir -p build && cd build && cmake -Wno-dev .. -DQC_SOC_TARGET=${QC_SOC_TARGET} -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
+dspal_tester: ENV_VARS ../cmake_hexagon/toolchain/Toolchain-qurt.cmake
+	mkdir -p build && cd build && cmake -Wno-dev .. -DQC_SOC_TARGET=${QC_SOC_TARGET} -DCMAKE_TOOLCHAIN_FILE=../cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
 load: dspal_tester
